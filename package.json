@@ -1,0 +1,41 @@
+{
+  "name": "solidity-auditor-mcp",
+  "version": "1.0.0",
+  "description": "An MCP server that audits Ethereum/Solidity smart contracts using the Cysic Minimax model (minimax-m3). Exposes audit_contract, check_vulnerability, gas_optimization, and generate_report over stdio.",
+  "main": "server.js",
+  "bin": {
+    "solidity-auditor-mcp": "server.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "type": "commonjs",
+  "files": [
+    "server.js",
+    "src/",
+    "examples/",
+    "README.md",
+    "ARCHITECTURE.md",
+    ".env.example"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "solidity",
+    "ethereum",
+    "smart-contract",
+    "security",
+    "audit",
+    "cysic",
+    "minimax",
+    "swc"
+  ],
+  "author": "solidity-auditor-mcp",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
