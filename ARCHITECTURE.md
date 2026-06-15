@@ -212,3 +212,44 @@ for ticketing systems and dashboards.
 - Persistent report storage (S3 / local SQLite) keyed by source hash.
 - A `--mock` mode that uses fixture responses for offline development
   and CI testing of the MCP plumbing.
+
+## 9. Innovation rationale
+
+Three design choices in this codebase were deliberate; this section
+restates the *why* for each so future maintainers do not "simplify"
+them away.
+
+**3-pass pipeline.** Reconnaissance, deep scanning, and severity
+scoring run as three separate model calls instead of one. Pass 1
+produces a contract map (state variables, function list, external
+calls, value flows) that is serialized into pass 2's user prompt,
+which kills the most common single-prompt failure mode — the model
+inventing function names that do not exist. Pass 3 asks the model to
+*re-score* and *deduplicate* the pass-2 findings and to commit to a
+single 0-100 risk score, which produces a calibrated severity
+profile rather than the over-flagged "critical" pile that single-shot
+prompts tend to return.
+
+**SWC mapping: curated registry + alias table.** `src/swc.js` ships
+a curated 37-entry subset of the SWC registry (SWC-100 through
+SWC-136) plus a category-alias table that maps free-text keywords
+(`"reentrancy"`, `"unchecked-call"`, `"tx-origin"`,
+`"front-running"`, ...) to the most likely canonical id. The model
+emits human-readable category strings; the alias table is the
+deterministic bridge to a canonical `SWC-NNN` id, so every shipped
+finding is ticketing-system-ready without a human in the loop. The
+registry is intentionally smaller than the full SWC catalog because
+the long tail rarely fires on real audits and adds mapping ambiguity
+without coverage benefit.
+
+**Chunking: 80k-char budget, 6-chunk cap.** The deep-scan pass is
+bounded to roughly 80k characters per call (`LARGE_SOURCE_CHARS`
+in `src/auditor.js`). This keeps the per-call prompt comfortably
+under the model's effective overhead ceiling (prompt + recon + SWC
+instructions + JSON schema + findings + response) and keeps latency
+predictable. The 6-chunk hard cap (`MAX_CHUNKS`) bounds the
+worst-case cost for very large protocols: an 80k × 6 ≈ 480k-char
+contract is the largest single audit we accept, and anything bigger
+is the caller's signal to split at the file level. The recon from
+pass 1 is shared across all chunks, so the model never loses the
+big picture when scanning a slice of a larger contract.

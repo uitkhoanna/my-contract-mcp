@@ -17,6 +17,7 @@
     "server.js",
     "src/",
     "examples/",
+    "docs/",
     "README.md",
     "ARCHITECTURE.md",
     ".env.example"
