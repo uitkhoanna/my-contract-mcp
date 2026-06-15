@@ -23,7 +23,6 @@ const {
 // generous context window, but the in-prompt instructions + recon +
 // findings add overhead.
 const LARGE_SOURCE_CHARS = 80_000;
-const CHUNK_PADDING = 2_000;       // chars of overlap between chunks
 const MAX_CHUNKS = 6;              // hard cap to avoid runaway cost
 
 function makeAuditor(opts = {}) {

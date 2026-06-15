@@ -212,9 +212,12 @@ solidity-auditor-mcp/
 │  ├─ auditor.js              # Multi-pass audit orchestration
 │  ├─ prompts.js              # System + per-pass prompt templates
 │  └─ swc.js                  # SWC registry + category-alias mapping
-└─ examples/
-   ├─ Vulnerable.sol          # Deliberately broken bank for demos
-   └─ demo.md                 # Expected tool-call transcript for all 4 tools
+├─ examples/
+│  ├─ Vulnerable.sol          # Deliberately broken bank for demos
+│  └─ demo.md                 # Expected tool-call transcript for all 4 tools
+└─ docs/
+   ├─ AGENTS.md               # CyOps Planner->Builder->Reviewer build provenance
+   └─ plans/                  # This run's Planner deliverable (build plan)
 ```
 
 ## Innovation
